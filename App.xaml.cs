@@ -1,6 +1,5 @@
-﻿using System.Configuration;
-using System.Data;
-using System.Windows;
+﻿using System.Windows;
+using OSGeo.GDAL;
 
 namespace VectorLab
 {
@@ -9,6 +8,12 @@ namespace VectorLab
     /// </summary>
     public partial class App : Application
     {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+
+            Gdal.AllRegister(); // 드라이버 등록(GeoTIFF 포함)
+        }
     }
 
 }

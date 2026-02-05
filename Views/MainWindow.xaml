@@ -7,9 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="1000">
     <Grid>
-        <TextBlock Text="{Binding Title}"
-                   FontSize="24"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Center"/>
+        <Image Source="{Binding CurrentImage}"
+               Stretch="Uniform"/>
     </Grid>
 </Window>

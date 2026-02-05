@@ -19,6 +19,7 @@ namespace VectorLab.Views
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = new MainViewModel();
         }
     }
 }
