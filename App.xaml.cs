@@ -13,6 +13,8 @@ namespace VectorLab
             base.OnStartup(e);
 
             Gdal.AllRegister(); // 드라이버 등록(GeoTIFF 포함)
+
+
         }
     }
 
