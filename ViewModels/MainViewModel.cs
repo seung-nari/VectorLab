@@ -3,11 +3,15 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using VectorLab.Infrastructure;
 using VectorLab.Services;
+using VectorLab.Models;
+using System.Collections.ObjectModel;
+using System.Windows.Controls;
 
 namespace VectorLab.ViewModels
 {
     internal class MainViewModel : ViewModelBase
     {
+        // 현재 화면에 표시되는 GeoTIFF 이미지
         private BitmapSource? _currentImage;
         public BitmapSource? CurrentImage
         {
@@ -15,10 +19,15 @@ namespace VectorLab.ViewModels
             set => SetProperty(ref _currentImage, value);
         }
 
+        // 라벨 목록(사각형 라벨들)
+        public ObservableCollection<LabelRect> Labels { get; }
+
+        // 버튼에서 사용할 Command
         public ICommand OpenGeoTiffCommand { get; }
 
         public MainViewModel()
         {
+            Labels = new ObservableCollection<LabelRect>();
             OpenGeoTiffCommand = new RelayCommand(OpenGeoTiff);
         }
 
@@ -31,7 +40,10 @@ namespace VectorLab.ViewModels
 
             if (dig.ShowDialog() != true) return;
 
-            CurrentImage = GeoTiffLoaderGdal.LoadAsBitmapSource(dig.FileName);
+            // GDAL 서비스로 이미지 로드
+            var image = GeoTiffLoaderGdal.LoadAsBitmapSource(dig.FileName);
+
+            CurrentImage = image;
         }
     }
 }

@@ -12,11 +12,61 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Button Content="Open GeoTiff"
-                Command="{Binding OpenGeoTiffCommand}"
-                Margin="8"/>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0">
+            <Button Content="Open GeoTIFF"
+                    Command="{Binding OpenGeoTiffCommand}"
+                    Padding="10,6"/>
+        </StackPanel>
 
-        <Image Source="{Binding CurrentImage}"
-               Stretch="Uniform"/>
+        <!-- 화단 : 좌(이미지/켄버스) + 우(라벨 리스트)-->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            
+            <!-- 왼쪽: 이미지 + 오버레이 -->
+            <ScrollViewer Grid.Column="0"
+                          HorizontalScrollBarVisibility="Auto"
+                          VerticalScrollBarVisibility="Auto">
+                <Grid>
+                    <!-- GeoTIFF 픽셀 표시 -->
+                    <Image x:Name="Img"
+                           Source="{Binding CurrentImage}"
+                           Stretch="None"/>
+                    <!-- 라벨 도형 레이어-->
+                    <Canvas x:Name="Overlay"
+                            Background="Transparent"
+                            MouseLeftButtonDown="Overlay_MouseLeftButtonDown"
+                            MouseMove="Overlay_MouseMove"
+                            MouseLeftButtonUp="Overlay_MouseLeftButtonUp"/>
+                </Grid>
+            </ScrollViewer>
+            
+            <!-- 오른쪽: 라벨 리스트 -->
+            <Border Grid.Column="1" BorderBrush="Gray" BorderThickness="1" Margin="0">
+                <DockPanel>
+                    <TextBlock Text="Labels" FontWeight="Bold" Margin="8" DockPanel.Dock="Top"/>
+
+                    <ListBox ItemsSource="{Binding Labels}" Margin="8">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                    <Run Text="{Binding ClassName}"/>
+                                    <Run Text="  ("/>
+                                    <Run Text="{Binding X, StringFormat=F0}"/>
+                                    <Run Text=","/>
+                                    <Run Text="{Binding Y, StringFormat=F0}"/>
+                                    <Run Text=")  "/>
+                                    <Run Text="{Binding Width, StringFormat=F0}"/>
+                                    <Run Text=" x "/>
+                                    <Run Text="{Binding Height, StringFormat=F0}"/>
+                                </TextBlock>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+            </Border>
+        </Grid>
     </Grid>
 </Window>
