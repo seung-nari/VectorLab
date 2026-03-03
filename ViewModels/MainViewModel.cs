@@ -5,7 +5,7 @@ using VectorLab.Infrastructure;
 using VectorLab.Services;
 using VectorLab.Models;
 using System.Collections.ObjectModel;
-using System.Windows.Controls;
+
 
 namespace VectorLab.ViewModels
 {
@@ -21,6 +21,17 @@ namespace VectorLab.ViewModels
 
         // 라벨 목록(사각형 라벨들)
         public ObservableCollection<LabelRect> Labels { get; }
+
+        private LabelRect? _selectedLabel;
+        
+        // ListBox의 SelectedItem과 바인딩될 속성
+        public LabelRect? SelectedLabel
+        {
+            get => _selectedLabel;
+            // SetProperty는 ViewModelBase에 있는 함수
+            // 값이 바뀌면 UI에게 "값 바뀌었다"라고 알려줌 (INotifyPropertyChanged)
+            set => SetProperty(ref _selectedLabel, value);
+        }
 
         // 버튼에서 사용할 Command
         public ICommand OpenGeoTiffCommand { get; }

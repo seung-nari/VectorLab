@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VectorLab"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="1000">
+        Title="MainWindow" Height="600" Width="1000"
+        KeyDown="Window_KeyDown">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -48,7 +49,9 @@
                 <DockPanel>
                     <TextBlock Text="Labels" FontWeight="Bold" Margin="8" DockPanel.Dock="Top"/>
 
-                    <ListBox ItemsSource="{Binding Labels}" Margin="8">
+                    <ListBox ItemsSource="{Binding Labels}" 
+                             SelectedItem="{Binding SelectedLabel, Mode=TwoWay}"
+                             Margin="8">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock>

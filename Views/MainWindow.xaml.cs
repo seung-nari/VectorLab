@@ -10,6 +10,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using VectorLab.ViewModels;
 using VectorLab.Models;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace VectorLab.Views
 {
@@ -23,10 +25,15 @@ namespace VectorLab.Views
             InitializeComponent();
 
             DataContext = new MainViewModel();
+
+            // Labels 컬렉션이 변경될 때 자동으로 감지하기 위해 연결
+            if (DataContext is MainViewModel vm) vm.Labels.CollectionChanged += Labels_CollectionChanged;
         }
 
         private Point? _start;      // 드래그 시작점
         private Rectangle? _rubber; // 드래그 중 임시로 보이는 사각형(고무줄)
+
+        private readonly Dictionary<LabelRect, Rectangle> _labelToShape = new();
 
         private void Overlay_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -84,22 +91,67 @@ namespace VectorLab.Views
             double h = _rubber.Height;
 
             // 화면 도형을 "데이터 라벨"로 변환해서 VM에 저장
+            var label = new LabelRect
+            {
+                X = x,
+                Y = y,
+                Width = w,
+                Height = h,
+                ClassName = "default"
+            };
+
             if(DataContext is MainViewModel vm)
             {
-                vm.Labels.Add(new LabelRect
-                {
-                    X = x,
-                    Y = y,
-                    Width = w,
-                    Height = h,
-                    ClassName = "default"
-                });
+                vm.Labels.Add(label);
+
+                _labelToShape[label] = _rubber!;
             }
 
             // 너무 작은 드래그는 라벨로 저장 안 하고 싶으면 여기서 w/h 체크하면 됨
 
             _start = null;
             _rubber = null;
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Delete 키 여부 확인
+            if (e.Key == System.Windows.Input.Key.Delete)
+            {
+                // 현재 View가 가지고 있는 ViewModel 가져오기
+                if (DataContext is MainViewModel vm)
+                {
+                    // 선택된 라벨이 있을 때만 삭제
+                    if(vm.SelectedLabel != null)
+                    {
+                        // System.Diagnostics.Debug.WriteLine("Delete 눌림");
+                        // Labels 리스트에서 제거
+                        vm.Labels.Remove(vm.SelectedLabel);
+
+                        // 선택값 초기화
+                        vm.SelectedLabel = null;
+                    }
+                }
+            }
+        }
+
+        // Labels에서 Remove가 발생하면 자동으로 호출됨
+        private void Labels_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            // 삭제된 항목이 없으면 종료
+            if (e.OldItems == null) return;
+
+            foreach(var item in e.OldItems)
+            {
+                if(item is LabelRect label && _labelToShape.TryGetValue(label, out var rect))
+                {
+                    // 화면에서 사각형 제거
+                    Overlay.Children.Remove(rect);
+
+                    // 연결표에서도 제거
+                    _labelToShape.Remove(label);
+                }
+            }
         }
     }
 }
