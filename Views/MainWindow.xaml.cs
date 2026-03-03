@@ -1,17 +1,11 @@
-﻿using System.Text;
+﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-using VectorLab.ViewModels;
 using VectorLab.Models;
-using System.Collections.Generic;
-using System.Collections.Specialized;
+using VectorLab.ViewModels;
 
 namespace VectorLab.Views
 {
@@ -27,7 +21,12 @@ namespace VectorLab.Views
             DataContext = new MainViewModel();
 
             // Labels 컬렉션이 변경될 때 자동으로 감지하기 위해 연결
-            if (DataContext is MainViewModel vm) vm.Labels.CollectionChanged += Labels_CollectionChanged;
+            // ViewModel의 PropertyChanged 감지
+            if (DataContext is MainViewModel vm)
+            {
+                vm.Labels.CollectionChanged += Labels_CollectionChanged;
+                vm.PropertyChanged += Vm_PropertyChanged;
+            }
         }
 
         private Point? _start;      // 드래그 시작점
@@ -151,6 +150,32 @@ namespace VectorLab.Views
                     // 연결표에서도 제거
                     _labelToShape.Remove(label);
                 }
+            }
+        }
+
+        private void Vm_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            // SelectedLabel이 변경된 경우에만 색을 다시 칠해준다.
+            if(e.PropertyName == nameof(MainViewModel.SelectedLabel))
+            {
+                UpdateSelectionVisual();
+            }
+        }
+
+        private void UpdateSelectionVisual()
+        {
+            if (DataContext is not MainViewModel vm) return;
+
+            // Label -> rect 매핑표를 돌면서 모두 색을 다시 지정
+            foreach(var pair in _labelToShape)
+            {
+                var label    = pair.Key;     // 라벨 데이터
+                var rect     = pair.Value;   // 화면에 그려진 사각형
+
+                if (label == vm.SelectedLabel)
+                    rect.Stroke = Brushes.Red;
+                else
+                    rect.Stroke = Brushes.Lime;
             }
         }
     }
