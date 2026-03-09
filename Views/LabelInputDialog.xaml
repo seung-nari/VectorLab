@@ -1,0 +1,20 @@
+﻿<Window x:Class="VectorLab.Views.LabelInputDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Label Name"
+        Height="170"
+        Width="300"
+        WindowStartupLocation="CenterOwner">
+    <StackPanel Margin="20">
+        <TextBlock Text="라벨 이름 입력"
+                   Margin="0,0,0,10"
+                   FontWeight="Bold" />
+        <TextBox x:Name="LabelNameTextBox"
+                 Height="25"
+                 Margin="0,0,0,15" />
+        <Button Content="OK"
+                Width="60"
+                HorizontalAlignment="Right"
+                Click="OkButton_Click" />
+    </StackPanel>
+</Window>

@@ -89,6 +89,20 @@ namespace VectorLab.Views
             double w = _rubber.Width;
             double h = _rubber.Height;
 
+            // 라벨 이름 입력창 표시
+            var dialog = new LabelInputDialog
+            {
+                Owner = this
+            };
+
+            if(dialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            // 입력된 라벨 이름
+            var labelName = dialog.LabelName;
+
             // 화면 도형을 "데이터 라벨"로 변환해서 VM에 저장
             var label = new LabelRect
             {
@@ -96,7 +110,7 @@ namespace VectorLab.Views
                 Y = y,
                 Width = w,
                 Height = h,
-                ClassName = "default"
+                ClassName = labelName
             };
 
             if(DataContext is MainViewModel vm)
