@@ -117,19 +117,31 @@ namespace VectorLab.Views
             // Delete 키 여부 확인
             if (e.Key == System.Windows.Input.Key.Delete)
             {
-                // 현재 View가 가지고 있는 ViewModel 가져오기
-                if (DataContext is MainViewModel vm)
-                {
-                    // 선택된 라벨이 있을 때만 삭제
-                    if(vm.SelectedLabel != null)
-                    {
-                        // System.Diagnostics.Debug.WriteLine("Delete 눌림");
-                        // Labels 리스트에서 제거
-                        vm.Labels.Remove(vm.SelectedLabel);
+                DeleteSelectedLabel();
+            }
+        }
 
-                        // 선택값 초기화
-                        vm.SelectedLabel = null;
-                    }
+        // 삭제 버튼
+        private void DeleteSeletedButton_Click(object sender, RoutedEventArgs e)
+        {
+            DeleteSelectedLabel();
+        }
+
+        // 라벨 삭제
+        private void DeleteSelectedLabel()
+        {
+            // 현재 View가 가지고 있는 ViewModel 가져오기
+            if (DataContext is MainViewModel vm)
+            {
+                // 선택된 라벨이 있을 때만 삭제
+                if (vm.SelectedLabel != null)
+                {
+                    // System.Diagnostics.Debug.WriteLine("Delete 눌림");
+                    // Labels 리스트에서 제거
+                    vm.Labels.Remove(vm.SelectedLabel);
+
+                    // 선택값 초기화
+                    vm.SelectedLabel = null;
                 }
             }
         }

@@ -49,6 +49,12 @@
                 <DockPanel>
                     <TextBlock Text="Labels" FontWeight="Bold" Margin="8" DockPanel.Dock="Top"/>
 
+                    <Button Content="삭제"
+                            Margin="8,0,8,8"
+                            Padding="8,4"
+                            DockPanel.Dock="Top"
+                            Click="DeleteSeletedButton_Click"/>
+
                     <ListBox ItemsSource="{Binding Labels}" 
                              SelectedItem="{Binding SelectedLabel, Mode=TwoWay}"
                              Margin="8">
