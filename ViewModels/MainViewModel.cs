@@ -19,6 +19,15 @@ namespace VectorLab.ViewModels
             set => SetProperty(ref _currentImage, value);
         }
 
+        // 현재 열려 있는 GeoTIFF 파일의 전체 경로
+        // JSON 저장/로드할 때 기준이 되는 경로
+        private string? _currentImagePath;
+        public string CurrentImagePath
+        {
+            get => _currentImagePath;
+            set => SetProperty(ref _currentImagePath, value);
+        }
+
         // 라벨 목록(사각형 라벨들)
         public ObservableCollection<LabelRect> Labels { get; }
 
@@ -44,15 +53,18 @@ namespace VectorLab.ViewModels
 
         private void OpenGeoTiff()
         {
-            var dig = new OpenFileDialog
+            var dialog = new OpenFileDialog
             {
                 Filter = "GeoTIFF (*.tif;*.tiff)|*.tif;*.tiff|All files (*.*)|*.*"
             };
 
-            if (dig.ShowDialog() != true) return;
+            if (dialog.ShowDialog() != true) return;
 
             // GDAL 서비스로 이미지 로드
-            var image = GeoTiffLoaderGdal.LoadAsBitmapSource(dig.FileName);
+            var image = GeoTiffLoaderGdal.LoadAsBitmapSource(dialog.FileName);
+
+            // GeoTIFF 파일 경로 저장
+            CurrentImagePath = dialog.FileName;
 
             CurrentImage = image;
         }

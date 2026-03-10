@@ -6,6 +6,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using VectorLab.Models;
 using VectorLab.ViewModels;
+using VectorLab.Services;
 
 namespace VectorLab.Views
 {
@@ -28,6 +29,10 @@ namespace VectorLab.Views
                 vm.PropertyChanged += Vm_PropertyChanged;
             }
         }
+
+        // json 로드 중에는 Labels.Add/Remove가 발생하더라도
+        // 다시 저장하지 않도록 막는 플래그 선언
+        private bool _isLoadingLabels = false;
 
         private Point? _start;      // 드래그 시작점
         private Rectangle? _rubber; // 드래그 중 임시로 보이는 사각형(고무줄)
@@ -164,17 +169,33 @@ namespace VectorLab.Views
         private void Labels_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             // 삭제된 항목이 없으면 종료
-            if (e.OldItems == null) return;
-
-            foreach(var item in e.OldItems)
+            if (e.OldItems != null)
             {
-                if(item is LabelRect label && _labelToShape.TryGetValue(label, out var rect))
+                foreach (var item in e.OldItems)
                 {
-                    // 화면에서 사각형 제거
-                    Overlay.Children.Remove(rect);
+                    if(item is LabelRect label && _labelToShape.ContainsKey(label))
+                    {
+                        var rect = _labelToShape[label];
 
-                    // 연결표에서도 제거
-                    _labelToShape.Remove(label);
+                        // 화면에서 사각형 제거
+                        Overlay.Children.Remove(rect);
+
+                        // 연결표에서도 제거
+                        _labelToShape.Remove(label);
+                    }
+                }
+            }
+
+
+            // 로드 중이면 저장하지 않음
+            if (_isLoadingLabels) return;
+
+            // 라벨 컬렉션이 변경되면 json 저장
+            if(DataContext is MainViewModel vm)
+            {
+                if (!string.IsNullOrWhiteSpace(vm.CurrentImagePath))
+                {
+                    LabelFileService.Save(vm.CurrentImagePath, vm.Labels);
                 }
             }
         }
@@ -185,6 +206,12 @@ namespace VectorLab.Views
             if(e.PropertyName == nameof(MainViewModel.SelectedLabel))
             {
                 UpdateSelectionVisual();
+            }
+
+            // 현재 이미지 경로가 바뀌면(= 새GeoTIFF를 열었으면)
+            if(e.PropertyName == nameof(MainViewModel.CurrentImagePath))
+            {
+                LoadLabelsForCurrentImage();
             }
         }
 
@@ -202,6 +229,69 @@ namespace VectorLab.Views
                     rect.Stroke = Brushes.Red;
                 else
                     rect.Stroke = Brushes.Lime;
+            }
+        }
+
+        // json 파일 읽어서 라벨 그리기
+        private void DrawLabelRectangle(LabelRect label)
+        {
+            var rect = new Rectangle
+            {
+                Width = label.Width,
+                Height = label.Height,
+                Stroke = Brushes.Lime,
+                StrokeThickness = 2,
+                Fill = Brushes.Transparent
+            };
+
+            Canvas.SetLeft(rect, label.X);
+            Canvas.SetTop(rect, label.Y);
+
+            Overlay.Children.Add(rect);
+
+            _labelToShape[label] = rect;
+        }
+
+        // 현재 이미지 경로를 기주으로 json 라벨 파일을 읽어와
+        // ViewModel Labels와 화면 사각형을 복원
+        private void LoadLabelsForCurrentImage()
+        {
+            if(DataContext is not MainViewModel vm) return; 
+
+            if(string.IsNullOrWhiteSpace(vm.CurrentImagePath)) return;
+
+            _isLoadingLabels = true;
+
+            try
+            {
+                // 기존 화면 사각형 모두 제거
+                Overlay.Children.Clear();
+                _labelToShape.Clear();
+
+                // 기존 vm 라벨 제거
+                vm.Labels.Clear();
+
+                // json에서 라벨 불러오기
+                var loadedLabels = LabelFileService.Load(vm.CurrentImagePath);
+
+                foreach( var label in loadedLabels)
+                {
+                    // vm 리스트에 넣기
+                    vm.Labels.Add(label);
+
+                    // 화면에 그리기
+                    DrawLabelRectangle(label);
+                }
+
+                // 선택값 초기화
+                vm.SelectedLabel = null;
+
+                // 선택 시각 상태도 초기화
+                UpdateSelectionVisual();
+            }
+            finally
+            {
+                _isLoadingLabels = false;
             }
         }
     }
