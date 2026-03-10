@@ -20,6 +20,9 @@ namespace VectorLab.Views
         private void OkButton_Click(object sender, RoutedEventArgs e)
         {
             LabelName = LabelNameTextBox.Text;
+
+            if(LabelName == "") LabelName = "default";
+
             DialogResult = true;
         }
     }
