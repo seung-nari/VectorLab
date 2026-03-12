@@ -310,7 +310,18 @@ namespace VectorLab.Views
             else if (e.Delta < 0)
                 _zoomScale -= 0.1;
 
+            // 최소/최대 배율 제한
+            if (_zoomScale < 0.2)
+                _zoomScale = 0.2;
 
+            if (_zoomScale > 5.0)
+                _zoomScale = 5.0;
+
+            // 실제 확대/축소 적용
+            _zoomTransform.ScaleX = _zoomScale;
+            _zoomTransform.ScaleY = _zoomScale;
+
+            e.Handled = true;
         }
 
     }
