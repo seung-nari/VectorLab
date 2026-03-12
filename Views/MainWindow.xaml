@@ -29,8 +29,9 @@
             <!-- 왼쪽: 이미지 + 오버레이 -->
             <ScrollViewer Grid.Column="0"
                           HorizontalScrollBarVisibility="Auto"
-                          VerticalScrollBarVisibility="Auto">
-                <Grid>
+                          VerticalScrollBarVisibility="Auto"
+                          PreviewMouseWheel="ImageScrollViewer_PreviewMouseWheel">
+                <Grid x:Name="ImageContainer">
                     <!-- GeoTIFF 픽셀 표시 -->
                     <Image x:Name="Img"
                            Source="{Binding CurrentImage}"

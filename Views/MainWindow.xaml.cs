@@ -19,6 +19,9 @@ namespace VectorLab.Views
         {
             InitializeComponent();
 
+            // Image+Overlay 가 들어있는 Grid에 확대/축소 Transform 연결
+            ImageContainer.LayoutTransform = _zoomTransform;
+
             DataContext = new MainViewModel();
 
             // Labels 컬렉션이 변경될 때 자동으로 감지하기 위해 연결
@@ -29,6 +32,11 @@ namespace VectorLab.Views
                 vm.PropertyChanged += Vm_PropertyChanged;
             }
         }
+
+        // 확대 축소 관리를 위한 ScaleTransform
+        private readonly ScaleTransform _zoomTransform = new ScaleTransform(1.0, 1.0);
+
+        private double _zoomScale = 1.0;
 
         // json 로드 중에는 Labels.Add/Remove가 발생하더라도
         // 다시 저장하지 않도록 막는 플래그 선언
@@ -294,5 +302,16 @@ namespace VectorLab.Views
                 _isLoadingLabels = false;
             }
         }
+
+        private void ImageScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (e.Delta > 0)
+                _zoomScale += 0.1;
+            else if (e.Delta < 0)
+                _zoomScale -= 0.1;
+
+
+        }
+
     }
 }
