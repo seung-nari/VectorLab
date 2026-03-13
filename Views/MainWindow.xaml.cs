@@ -108,30 +108,32 @@ namespace VectorLab.Views
                 Owner = this
             };
 
-            if(dialog.ShowDialog() != true)
+            // 다이얼로그 표시
+            bool? result = dialog.ShowDialog();
+            if(result == true)
             {
-                return;
+                // 화면 도형을 "데이터 라벨"로 변환해서 VM에 저장
+                var label = new LabelRect
+                {
+                    X = x,
+                    Y = y,
+                    Width = w,
+                    Height = h,
+                    ClassName = dialog.LabelName
+                };
+
+                if(DataContext is MainViewModel vm)
+                {
+                    vm.Labels.Add(label);
+
+                    _labelToShape[label] = _rubber!;
+                }
+            } 
+            else
+            {
+                Overlay.Children.Remove(_rubber);
             }
 
-            // 입력된 라벨 이름
-            var labelName = dialog.LabelName;
-
-            // 화면 도형을 "데이터 라벨"로 변환해서 VM에 저장
-            var label = new LabelRect
-            {
-                X = x,
-                Y = y,
-                Width = w,
-                Height = h,
-                ClassName = labelName
-            };
-
-            if(DataContext is MainViewModel vm)
-            {
-                vm.Labels.Add(label);
-
-                _labelToShape[label] = _rubber!;
-            }
 
             // 너무 작은 드래그는 라벨로 저장 안 하고 싶으면 여기서 w/h 체크하면 됨
 
@@ -323,6 +325,5 @@ namespace VectorLab.Views
 
             e.Handled = true;
         }
-
     }
 }
