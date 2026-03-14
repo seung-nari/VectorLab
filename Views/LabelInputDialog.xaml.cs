@@ -10,11 +10,16 @@ namespace VectorLab.Views
     public partial class LabelInputDialog : Window
     {
         // 입력된 라벨 이름
-        public string LabelName { get; private set; } = "";
+        public string LabelName { get; private set; } = "default";
 
         public LabelInputDialog()
         {
             InitializeComponent();
+        }
+
+        private void LabelNameTextBox_TextChanged(object sender, EventArgs e)
+        {
+
         }
 
         private void OkButton_Click(object sender, RoutedEventArgs e)

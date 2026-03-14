@@ -9,12 +9,23 @@
         <TextBlock Text="라벨 이름 입력"
                    Margin="0,0,0,10"
                    FontWeight="Bold" />
-        <TextBox x:Name="LabelNameTextBox"
-                 Height="25"
-                 Margin="0,0,0,15" />
+        <Grid>
+            <TextBox x:Name="LabelNameTextBox"
+                     Height="25"
+                     VerticalAlignment="Center"
+                     TextChanged="LabelNameTextBox_TextChanged"/>
+            <TextBlock x:Name="PlaceholderText"
+                       Text="Default"
+                       Foreground="Gray"
+                       Margin="6,0,0,0"
+                       VerticalAlignment="Center"
+                       IsHitTestVisible="False"/>
+        </Grid>
+        
         <Button Content="OK"
                 Width="60"
                 HorizontalAlignment="Right"
-                Click="OkButton_Click" />
+                Click="OkButton_Click" 
+                IsDefault="True"/>
     </StackPanel>
 </Window>
