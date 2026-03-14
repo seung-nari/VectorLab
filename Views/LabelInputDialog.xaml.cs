@@ -15,18 +15,22 @@ namespace VectorLab.Views
         public LabelInputDialog()
         {
             InitializeComponent();
+            PlaceholderText.Visibility = Visibility.Visible;
         }
 
         private void LabelNameTextBox_TextChanged(object sender, EventArgs e)
         {
-
+            if(string.IsNullOrWhiteSpace(LabelNameTextBox.Text))
+                PlaceholderText.Visibility = Visibility.Visible;
+            else
+                PlaceholderText.Visibility = Visibility.Collapsed;
         }
 
         private void OkButton_Click(object sender, RoutedEventArgs e)
         {
             LabelName = LabelNameTextBox.Text;
 
-            if(LabelName == "") LabelName = "default";
+            if(LabelName == "") LabelName = "Default";
 
             DialogResult = true;
         }
