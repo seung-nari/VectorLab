@@ -7,6 +7,7 @@ using System.Windows.Shapes;
 using VectorLab.Models;
 using VectorLab.ViewModels;
 using VectorLab.Services;
+using System.Threading.Tasks.Sources;
 
 namespace VectorLab.Views
 {
@@ -326,6 +327,34 @@ namespace VectorLab.Views
             _zoomTransform.ScaleX = _zoomScale;
             _zoomTransform.ScaleY = _zoomScale;
 
+            e.Handled = true;
+        }
+
+        private void Rectangle_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (DataContext is not MainViewModel vm)
+                return;
+
+            if (sender is not Rectangle rect)
+                return;
+
+            LabelRect foundLabel = null;
+
+            // Dictionary 전체 탐색
+            foreach (var pair in _labelToShape)
+            {
+                // Rectangle이 같은지 확인
+                if(pair.Value == rect)
+                {
+                    foundLabel = pair.Key;
+                    break;
+                }
+            }
+
+            if (foundLabel != null)
+                vm.SelectedLabel = foundLabel;
+
+            // 이벤트 전파 방지(Overlay이벤트 막기)
             e.Handled = true;
         }
     }
