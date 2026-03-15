@@ -254,6 +254,9 @@ namespace VectorLab.Views
                 Fill = Brushes.Transparent
             };
 
+            // 라벨 그리고 나서 선택되게
+            rect.MouseLeftButtonDown += Rectangle_MouseLeftButtonDown;
+
             Canvas.SetLeft(rect, label.X);
             Canvas.SetTop(rect, label.Y);
 
