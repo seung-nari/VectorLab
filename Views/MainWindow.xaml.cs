@@ -357,5 +357,39 @@ namespace VectorLab.Views
             // 이벤트 전파 방지(Overlay이벤트 막기)
             e.Handled = true;
         }
+
+        // 현재 선택된 라벨을 dx, dy 만큼 이동시키는 공통함수
+        // dx : X축 / dy : Y축
+        private void MoveSelectedLabel(double dx, double dy)
+        {
+            // ViewModel 가져오기
+            if (DataContext is not MainViewModel vm)
+                return;
+
+            // 선택된 라벨이 없으면 종료
+            if (vm.SelectedLabel == null)
+                return;
+
+            var selectedLabel = vm.SelectedLabel;
+
+            // 데이터 좌표 변경
+            selectedLabel.X += dx;
+            selectedLabel.Y += dy;
+
+            // 화면 위치 변경
+            if (_labelToShape.ContainsKey(selectedLabel))
+            {
+                var rect = _labelToShape[selectedLabel];
+
+                Canvas.SetLeft(rect, selectedLabel.X);
+                Canvas.SetTop(rect, selectedLabel.Y);
+            }
+
+            // 이동 후 JSON 저장
+            if (!string.IsNullOrWhiteSpace(vm.CurrentImagePath))
+            {
+                LabelFileService.Save(vm.CurrentImagePath, vm.Labels);
+            }
+        }
     }
 }
