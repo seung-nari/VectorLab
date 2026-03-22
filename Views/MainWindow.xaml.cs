@@ -149,6 +149,35 @@ namespace VectorLab.Views
             {
                 DeleteSelectedLabel();
             }
+
+            // 방향기 -> 선택된 라벨 이동
+            if(e.Key == Key.Left)
+            {
+                MoveSelectedLabel(-1, 0);
+                e.Handled = true;
+                return;
+            }
+
+            if(e.Key == Key.Right)
+            {
+                MoveSelectedLabel(1, 0);
+                e.Handled = true;
+                return;
+            }
+
+            if(e.Key == Key.Up)
+            {
+                MoveSelectedLabel(0, -1);
+                e.Handled = true;
+                return;
+            }
+
+            if(e.Key == Key.Down)
+            {
+                MoveSelectedLabel(0, 1);
+                e.Handled = true;
+                return;
+            }
         }
 
         // 삭제 버튼
