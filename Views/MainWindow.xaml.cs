@@ -145,36 +145,41 @@ namespace VectorLab.Views
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             // Delete 키 여부 확인
-            if (e.Key == System.Windows.Input.Key.Delete)
+            if (e.Key == Key.Delete)
             {
                 DeleteSelectedLabel();
+                e.Handled = true;
+                return;
             }
+
+            // Shift 누르고 있으면 10px 이동
+            int step = Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ? 10 : 1;
 
             // 방향기 -> 선택된 라벨 이동
             if(e.Key == Key.Left)
             {
-                MoveSelectedLabel(-1, 0);
+                MoveSelectedLabel(-step, 0);
                 e.Handled = true;
                 return;
             }
 
             if(e.Key == Key.Right)
             {
-                MoveSelectedLabel(1, 0);
+                MoveSelectedLabel(step, 0);
                 e.Handled = true;
                 return;
             }
 
             if(e.Key == Key.Up)
             {
-                MoveSelectedLabel(0, -1);
+                MoveSelectedLabel(0, -step);
                 e.Handled = true;
                 return;
             }
 
             if(e.Key == Key.Down)
             {
-                MoveSelectedLabel(0, 1);
+                MoveSelectedLabel(0, step);
                 e.Handled = true;
                 return;
             }
