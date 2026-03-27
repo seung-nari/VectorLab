@@ -142,7 +142,7 @@ namespace VectorLab.Views
             _rubber = null;
         }
 
-        private void Window_KeyDown(object sender, KeyEventArgs e)
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             // Delete 키 여부 확인
             if (e.Key == Key.Delete)
