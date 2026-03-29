@@ -8,6 +8,7 @@ using VectorLab.Models;
 using VectorLab.ViewModels;
 using VectorLab.Services;
 using System.Threading.Tasks.Sources;
+using System.Windows.Media.Imaging;
 
 namespace VectorLab.Views
 {
@@ -406,11 +407,26 @@ namespace VectorLab.Views
 
             var selectedLabel = vm.SelectedLabel;
 
-            // 데이터 좌표 변경
-            selectedLabel.X += dx;
-            selectedLabel.Y += dy;
+            // 현재 표시 중인 이미지 크기 확인
+            if (Img.Source is not BitmapSource bitmap)
+                return;
 
-            // 화면 위치 변경
+            double imageWidth = bitmap.PixelWidth;
+            double imageHeight = bitmap.PixelHeight;
+
+            // 이동 후의 좌표를 먼저 계산
+            double newX = selectedLabel.X + dx;
+            double newY = selectedLabel.Y + dy;
+
+            // 왼쪽 / 위쪽 경계 제한
+            if (newX < 0) newX = 0;
+            if (newY < 0) newY = 0;
+
+            // 데이터 좌표 갱신
+            selectedLabel.X = newX;
+            selectedLabel.Y = newY;
+
+            // 화면 위치 갱신
             if (_labelToShape.ContainsKey(selectedLabel))
             {
                 var rect = _labelToShape[selectedLabel];
