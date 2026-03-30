@@ -16,6 +16,11 @@
         <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0">
             <Button Content="Open GeoTIFF"
                     Command="{Binding OpenGeoTiffCommand}"
+                    Padding="10,6"
+                    Margin="0,0,8,0"/>
+
+            <Button Content="Close GeoTIFF"
+                    Command="{Binding CloseGeoTiffCommand}"
                     Padding="10,6"/>
         </StackPanel>
 
