@@ -51,6 +51,9 @@ namespace VectorLab.Views
 
         private void Overlay_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            // 이미지 없으면 라벨 생성 X
+            if (Img.Source == null) return;
+            
             // 1) 시작점 저장
             _start = e.GetPosition(Overlay);
 
