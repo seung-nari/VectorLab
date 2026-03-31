@@ -444,5 +444,54 @@ namespace VectorLab.Views
                 LabelFileService.Save(vm.CurrentImagePath, vm.Labels);
             }
         }
+
+        private void CloseGeoTiffButton_Click(object sender, RoutedEventArgs e)
+        {
+            CloseCurrentGeoTiff();
+        }
+
+        private void CloseCurrentGeoTiff()
+        {
+            // ViewModel 가져오기
+            if (DataContext is not MainViewModel vm)
+                return;
+
+            // JSON 로드 중 플래그 켜기 -> Labels.Clear() 할 때 불필요한 저장 방지
+            _isLoadingLabels = true;
+
+            try
+            {
+                // 화면 이미지 제거
+                Img.Source = null;
+
+                // ViewModel의 CurrenImage 초기화
+                vm.CurrentImage = null;
+
+                // Canvas 위 사각형 전부 제거
+                Overlay.Children.Clear();
+
+                // 라벨 - 사각형 연결표 비우기
+                _labelToShape.Clear();
+
+                // ViewModel 라벨 목록 비우기
+                vm.Labels.Clear();
+
+                // 선택 상태 초기화
+                vm.SelectedLabel = null;
+
+                // 드래기 중 상태 초기화
+                _start = null;
+                _rubber = null;
+
+                // 확대 배율 초기화
+                _zoomScale = 1.0;
+                _zoomTransform.ScaleX = 1.0;
+                _zoomTransform.ScaleY = 1.0;
+            }
+            finally
+            {
+                _isLoadingLabels = false;
+            }
+        }
     }
 }

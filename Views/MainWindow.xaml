@@ -20,8 +20,8 @@
                     Margin="0,0,8,0"/>
 
             <Button Content="Close GeoTIFF"
-                    Command="{Binding CloseGeoTiffCommand}"
-                    Padding="10,6"/>
+                    Padding="10,6"
+                    Click="CloseGeoTiffButton_Click"/>
         </StackPanel>
 
         <!-- 화단 : 좌(이미지/켄버스) + 우(라벨 리스트)-->
