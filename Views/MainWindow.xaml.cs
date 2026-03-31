@@ -447,7 +447,19 @@ namespace VectorLab.Views
 
         private void CloseGeoTiffButton_Click(object sender, RoutedEventArgs e)
         {
-            CloseCurrentGeoTiff();
+            if(Img.Source == null) return;
+
+            MessageBoxResult result = MessageBox.Show(
+                "현재 이미지를 닫으시겠습니까?",
+                "Close GeoTIFF",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question
+            );
+
+            if(result == MessageBoxResult.Yes)
+            {
+                CloseCurrentGeoTiff();
+            }
         }
 
         private void CloseCurrentGeoTiff()
